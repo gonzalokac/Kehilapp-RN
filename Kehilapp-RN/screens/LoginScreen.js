@@ -1,16 +1,40 @@
+// screens/LoginScreen.js (actualizado para conductor)
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
   const [view, setView] = useState('inicio');
+  const [form, setForm] = useState({});
+  const navigation = useNavigation();
 
-  const FormInput = ({ placeholder, secure }) => (
+  const handleChange = (field, value) => {
+    setForm({ ...form, [field]: value });
+  };
+
+  const FormInput = ({ placeholder, secure, field }) => (
     <TextInput
       placeholder={placeholder}
       secureTextEntry={secure}
       style={styles.input}
+      value={form[field] || ''}
+      onChangeText={(text) => handleChange(field, text)}
     />
   );
+
+  const handleRegistro = (tipo) => {
+    const usuario = {
+      ...form,
+      tipo,
+    };
+    if (tipo === 'fletero') {
+      navigation.navigate('FleteroTabs');
+    } else if (tipo === 'conductor') {
+      navigation.navigate('ConductorTabs');
+    } else {
+      navigation.navigate('Home');
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -28,9 +52,9 @@ export default function LoginScreen() {
       {view === 'login' && (
         <>
           <Text style={styles.sectionTitle}>🔐 Iniciar Sesión</Text>
-          <FormInput placeholder="Email o Teléfono" />
-          <FormInput placeholder="Contraseña" secure />
-          <Button title="Ingresar" onPress={() => {}} />
+          <FormInput placeholder="Email o Teléfono" field="login" />
+          <FormInput placeholder="Contraseña" secure field="password" />
+          <Button title="Ingresar" onPress={() => navigation.navigate('Home')} />
           <Button title="⬅ Volver" onPress={() => setView('inicio')} />
         </>
       )}
@@ -46,59 +70,59 @@ export default function LoginScreen() {
         </>
       )}
 
-      {view === 'registroUsuario' && (
-        <>
-          <Text style={styles.sectionTitle}>📝 Crear Cuenta</Text>
-          <FormInput placeholder="Nombre" />
-          <FormInput placeholder="Apellido" />
-          <FormInput placeholder="Dirección" />
-          <FormInput placeholder="Email" />
-          <FormInput placeholder="Teléfono" />
-          <FormInput placeholder="Contraseña" secure />
-          <Button title="Registrarse" onPress={() => {}} />
-          <Button title="⬅ Volver" onPress={() => setView('inicio')} />
-        </>
-      )}
-
       {view === 'registroConductor' && (
         <>
           <Text style={styles.sectionTitle}>🚗 Registro de Conductor</Text>
-          <FormInput placeholder="Nombre completo" />
-          <FormInput placeholder="Número de licencia" />
-          <FormInput placeholder="Dirección" />
-          <FormInput placeholder="Email" />
-          <FormInput placeholder="Teléfono" />
-          <FormInput placeholder="Contraseña" secure />
-          <Button title="Registrarse como Conductor" onPress={() => {}} />
-          <Button title="⬅ Volver" onPress={() => setView('inicio')} />
+          <FormInput placeholder="Nombre completo" field="nombre" />
+          <FormInput placeholder="Número de licencia" field="licencia" />
+          <FormInput placeholder="Dirección" field="direccion" />
+          <FormInput placeholder="Email" field="email" />
+          <FormInput placeholder="Teléfono" field="telefono" />
+          <FormInput placeholder="Contraseña" secure field="password" />
+          <Button title="Registrarse como Conductor" onPress={() => handleRegistro('conductor')} />
+          <Button title="⬅ Volver" onPress={() => setView('tipoRegistro')} />
         </>
       )}
 
       {view === 'registroFletero' && (
         <>
           <Text style={styles.sectionTitle}>🚚 Registro de Fletero</Text>
-          <FormInput placeholder="Nombre completo" />
-          <FormInput placeholder="Patente del vehículo" />
-          <FormInput placeholder="Dirección" />
-          <FormInput placeholder="Email" />
-          <FormInput placeholder="Teléfono" />
-          <FormInput placeholder="Contraseña" secure />
-          <Button title="Registrarse como Fletero" onPress={() => {}} />
-          <Button title="⬅ Volver" onPress={() => setView('inicio')} />
+          <FormInput placeholder="Nombre completo" field="nombre" />
+          <FormInput placeholder="Patente del vehículo" field="patente" />
+          <FormInput placeholder="Dirección" field="direccion" />
+          <FormInput placeholder="Email" field="email" />
+          <FormInput placeholder="Teléfono" field="telefono" />
+          <FormInput placeholder="Contraseña" secure field="password" />
+          <Button title="Registrarse como Fletero" onPress={() => handleRegistro('fletero')} />
+          <Button title="⬅ Volver" onPress={() => setView('tipoRegistro')} />
+        </>
+      )}
+
+      {view === 'registroUsuario' && (
+        <>
+          <Text style={styles.sectionTitle}>🙋 Registro de Usuario</Text>
+          <FormInput placeholder="Nombre" field="nombre" />
+          <FormInput placeholder="Apellido" field="apellido" />
+          <FormInput placeholder="Dirección" field="direccion" />
+          <FormInput placeholder="Email" field="email" />
+          <FormInput placeholder="Teléfono" field="telefono" />
+          <FormInput placeholder="Contraseña" secure field="password" />
+          <Button title="Registrarse" onPress={() => handleRegistro('usuario')} />
+          <Button title="⬅ Volver" onPress={() => setView('tipoRegistro')} />
         </>
       )}
 
       {view === 'registroEmpresa' && (
         <>
           <Text style={styles.sectionTitle}>🏢 Registro de Empresa</Text>
-          <FormInput placeholder="Nombre de la empresa" />
-          <FormInput placeholder="CUIT" />
-          <FormInput placeholder="Dirección fiscal" />
-          <FormInput placeholder="Email" />
-          <FormInput placeholder="Teléfono" />
-          <FormInput placeholder="Contraseña" secure />
-          <Button title="Registrarse como Empresa" onPress={() => {}} />
-          <Button title="⬅ Volver" onPress={() => setView('inicio')} />
+          <FormInput placeholder="Nombre de la empresa" field="nombre" />
+          <FormInput placeholder="CUIT" field="cuit" />
+          <FormInput placeholder="Dirección fiscal" field="direccion" />
+          <FormInput placeholder="Email" field="email" />
+          <FormInput placeholder="Teléfono" field="telefono" />
+          <FormInput placeholder="Contraseña" secure field="password" />
+          <Button title="Registrarse como Empresa" onPress={() => handleRegistro('empresa')} />
+          <Button title="⬅ Volver" onPress={() => setView('tipoRegistro')} />
         </>
       )}
     </ScrollView>
